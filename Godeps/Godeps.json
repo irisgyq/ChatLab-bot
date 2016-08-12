@@ -1,0 +1,5 @@
+{
+	"ImportPath": "messenger-bot",
+	"GoVersion": "go1.6",
+	"Deps": []
+}
