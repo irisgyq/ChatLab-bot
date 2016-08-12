@@ -19,6 +19,8 @@ heroku config:set VALIDATION_TOKEN=********
 
 References:
 
+https://developers.facebook.com/docs/messenger-platform/quickstart
+
 https://github.com/jw84/messenger-bot-tutorial
 
 https://github.com/maciekmm/messenger-platform-go-sdk
