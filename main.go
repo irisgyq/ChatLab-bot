@@ -54,7 +54,8 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	fmt.Println("Mensagem recebida!")
-	fmt.Println(string(payload))
+	pj, _ := json.Marshal(payload)
+	fmt.Println(string(pj))
 
 	for _, entry := range payload.Entries {
 		for _, message := range entry.Messaging {
@@ -92,7 +93,7 @@ func sendMessage(sender string, text string) {
 
 	if err != nil {
 		fmt.Println("Erro na mensagem enviada para o Messenger!")
-		fmt.Println(string(err))
+		fmt.Println(err)
 	}
 	defer resp.Body.Close()
 
