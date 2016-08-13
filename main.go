@@ -60,7 +60,7 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 	for _, entry := range payload.Entries {
 		for _, message := range entry.Messaging {
 			if message.Message != nil {
-				go sendMessage(message.Recipient.ID, message.Message.Text)
+				go sendMessage(message.Sender.ID, message.Message.Text)
 			}
 		}
 	}
