@@ -3,13 +3,12 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-    "fmt"
-
 )
 
 func main() {
@@ -57,9 +56,7 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 	for _, entry := range payload.Entries {
 		for _, message := range entry.Messaging {
 			if message.Message != nil {
-				if m.MessageReceived != nil {
-					go sendMessage(message.Recipient.ID, message.Message.Text)
-				}
+				go sendMessage(message.Recipient.ID, message.Message.Text)
 			}
 		}
 	}
@@ -70,33 +67,31 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 
 func sendMessage(sender string, text string) {
 
-    msg, err := json.Marshal(Message{
-        Recipient: Recipient{
-            ID: recipient,
-        },
-        Message: TextMessage {
-            Text: message,
-        }
-    })
+	msg, err := json.Marshal(MessageToSend{
+		Recipient: Recipient{
+			ID: sender,
+		},
+		Message: TextMessage{
+			Text: text,
+		},
+	})
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		fmt.Println(err)
+	}
 
-    graphAPI := "https://graph.facebook.com"
-    resp, err := doRequest("POST", graphAPI+"/v2.6/me/messages", bytes.NewReader(msg))
+	graphAPI := "https://graph.facebook.com"
+	resp, err := doRequest("POST", graphAPI+"/v2.6/me/messages", bytes.NewReader(msg))
 
-    if err != nil {
-        fmt.Println(err)
-    }
-    defer resp.Body.Close()
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer resp.Body.Close()
 
-    read, err := ioutil.ReadAll(resp.Body)
-    if resp.StatusCode != http.StatusOK {
-        er := new(rawError)
-        json.Unmarshal(read, er)
-        fmt.Println(er.Error)
-    }
+	read, err := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		fmt.Println(read)
+	}
 
 }
 
@@ -107,7 +102,7 @@ func doRequest(method string, url string, body io.Reader) (*http.Response, error
 	}
 	req.Header.Set("Content-Type", "application/json")
 	query := req.URL.Query()
-	query.Set("access_token", os.Getenc("FB_PAGE_ACCESS_TOKEN"))
+	query.Set("access_token", os.Getenv("FB_PAGE_ACCESS_TOKEN"))
 	req.URL.RawQuery = query.Encode()
 	return http.DefaultClient.Do(req)
 }
@@ -123,13 +118,13 @@ type Entry struct {
 	ID        json.Number `json:"id"`
 	Time      int64       `json:"time"`
 	Messaging []struct {
-		Sender struct {
+		Sender *struct {
 			ID string `json:"id"`
 		} `json:"sender"`
-		Recipient struct {
+		Recipient *struct {
 			ID string `json:"id"`
 		} `json:"recipient"`
-		Message struct {
+		Message *struct {
 			Text string `json:"text"`
 		} `json:"message"`
 		Timestamp int64 `json:"timestamp"`
@@ -145,7 +140,7 @@ type TextMessage struct {
 }
 
 // https://developers.facebook.com/docs/messenger-platform/send-api-reference/text-message
-type Message struct {
+type MessageToSend struct {
 	Recipient Recipient   `json:"recipient"`
 	Message   TextMessage `json:"message"`
 }
