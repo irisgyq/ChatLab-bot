@@ -53,6 +53,9 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	fmt.Println("Mensagem recebida!")
+	fmt.Println(payload)
+
 	for _, entry := range payload.Entries {
 		for _, message := range entry.Messaging {
 			if message.Message != nil {
@@ -77,13 +80,18 @@ func sendMessage(sender string, text string) {
 	})
 
 	if err != nil {
+		fmt.Println("Erro criando mensagem de retorno!")
 		fmt.Println(err)
 	}
+
+	fmt.Println("Enviando mensagem!")
+	fmt.Println(msg)
 
 	graphAPI := "https://graph.facebook.com"
 	resp, err := doRequest("POST", graphAPI+"/v2.6/me/messages", bytes.NewReader(msg))
 
 	if err != nil {
+		fmt.Println("Erro na mensagem enviada para o Messenger!")
 		fmt.Println(err)
 	}
 	defer resp.Body.Close()
