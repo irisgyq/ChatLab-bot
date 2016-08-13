@@ -16,6 +16,7 @@ git push heroku master
 After that you will need to add variables:
 
 heroku config:set VALIDATION_TOKEN=********
+heroku config:set FB_PAGE_ACCESS_TOKEN=*********
 
 References:
 
