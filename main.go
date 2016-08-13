@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -60,7 +61,12 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 	for _, entry := range payload.Entries {
 		for _, message := range entry.Messaging {
 			if message.Message != nil {
-				go sendMessage(message.Sender.ID, message.Message.Text)
+				info, errr := getSenderInfo(message.Sender.ID)
+				msg := "Desculpe. Que é você?"
+				if errr == nil {
+					msg = "Olá " + info.FirstName + " " + info.LastName + ". Sou um papagaio. " + message.Message.Text
+				}
+				go sendMessage(message.Sender.ID, msg)
 			}
 		}
 	}
@@ -116,6 +122,23 @@ func doRequest(method string, url string, body io.Reader) (*http.Response, error
 	return http.DefaultClient.Do(req)
 }
 
+func getSenderInfo(userID string) (*Info, error) {
+	graphAPI := "https://graph.facebook.com"
+	resp, err := doRequest("GET", fmt.Sprintf(graphAPI+"/v2.6/%s?fields=first_name,last_name", userID), nil)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	read, err := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK {
+		fmt.Println("Erro pegando informações no usuário!")
+		fmt.Println(string(read))
+		return nil, errors.New(string(read))
+	}
+	Info := new(Info)
+	return Info, json.Unmarshal(read, Info)
+}
+
 type Payload struct {
 	Object  string   `json:"object"`
 	Entries []*Entry `json:"entry"`
@@ -152,4 +175,9 @@ type TextMessage struct {
 type MessageToSend struct {
 	Recipient Recipient   `json:"recipient"`
 	Message   TextMessage `json:"message"`
+}
+
+type Info struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
