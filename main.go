@@ -74,6 +74,16 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 					msg = "Olá " + info.FirstName + " " + info.LastName + ". Sou um papagaio. " + message.Message.Text
 				}
 				go sendMessage(message.Sender.ID, msg)
+			} else if message.Postback != nil {
+				msg := "Não entendi!"
+				if message.Postback.Payload == "USER_DEFINED_PAYLOAD" {
+					msg = "Obrigado. Começou."
+				} else if message.Postback.Payload == "DEVELOPER_DEFINED_PAYLOAD_FOR_HELP" {
+					msg = "Em construção."
+				} else if message.Postback.Payload == "DEVELOPER_DEFINED_PAYLOAD_FOR_START_ORDER" {
+					msg = "Pode pedir."
+				}
+				go sendMessage(message.Sender.ID, msg)
 			}
 		}
 	}
@@ -177,7 +187,10 @@ type Entry struct {
 		} `json:"recipient"`
 		Message *struct {
 			Text string `json:"text"`
-		} `json:"message"`
+		} `json:"message,omitempty"`
+		Postback *struct {
+			Payload string `json:"payload"`
+		} `json:"postback,omitempty"`
 		Timestamp int64 `json:"timestamp"`
 	} `json:"messaging"`
 }
