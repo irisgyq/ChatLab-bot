@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto/hmac"
+	"crypto/sha1"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -47,6 +49,11 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 	}
 	defer req.Body.Close()
 
+	if len(req.Header.Get("x-hub-signature")) < 6 || !checkSignature(read, req.Header.Get("x-hub-signature")[5:]) {
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	payload := &Payload{}
 	err = json.Unmarshal(read, payload)
 	if err != nil {
@@ -73,6 +80,18 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 
 	rw.WriteHeader(http.StatusOK)
 	rw.Write([]byte(`{"status":"ok"}`))
+}
+
+// https://developers.facebook.com/docs/messenger-platform/webhook-reference
+func checkSignature(bytes []byte, expectedSignature string) bool {
+	appSecret := os.Getenv("APP_SECRET")
+
+	mac := hmac.New(sha1.New, []byte(appSecret))
+	mac.Write(bytes)
+	if fmt.Sprintf("%x", mac.Sum(nil)) != expectedSignature {
+		return false
+	}
+	return true
 }
 
 func sendMessage(sender string, text string) {
