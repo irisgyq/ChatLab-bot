@@ -68,12 +68,19 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 	for _, entry := range payload.Entries {
 		for _, message := range entry.Messaging {
 			if message.Message != nil {
-				info, errr := getSenderInfo(message.Sender.ID)
-				msg := "Desculpe. Que é você?"
-				if errr == nil {
-					msg = "Olá " + info.FirstName + " " + info.LastName + ". Sou um papagaio. " + message.Message.Text
+				if message.Message.Text == "typing_on" {
+					go sendActionMessage(message.Sender.ID, "typing_on")
+				} else if message.Message.Text == "typing_off" {
+					go sendActionMessage(message.Sender.ID, "typing_off")
+				} else {
+					info, errr := getSenderInfo(message.Sender.ID)
+					msg := "Desculpe. Que é você?"
+					if errr == nil {
+						msg = "Olá " + info.FirstName + " " + info.LastName + ". Sou um papagaio. " + message.Message.Text
+					}
+					go sendTextMessage(message.Sender.ID, msg)
 				}
-				go sendMessage(message.Sender.ID, msg)
+
 			} else if message.Postback != nil {
 				msg := "Não entendi!"
 				if message.Postback.Payload == "USER_DEFINED_PAYLOAD" {
@@ -83,7 +90,7 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 				} else if message.Postback.Payload == "DEVELOPER_DEFINED_PAYLOAD_FOR_START_ORDER" {
 					msg = "Pode pedir."
 				}
-				go sendMessage(message.Sender.ID, msg)
+				go sendTextMessage(message.Sender.ID, msg)
 			}
 		}
 	}
@@ -104,9 +111,8 @@ func checkSignature(bytes []byte, expectedSignature string) bool {
 	return true
 }
 
-func sendMessage(sender string, text string) {
-
-	msg, err := json.Marshal(MessageToSend{
+func sendTextMessage(sender string, text string) {
+	sendMessage(MessageToSend{
 		Recipient: Recipient{
 			ID: sender,
 		},
@@ -114,6 +120,20 @@ func sendMessage(sender string, text string) {
 			Text: text,
 		},
 	})
+}
+
+func sendActionMessage(sender string, action string) {
+	sendMessage(ActionToSend{
+		Recipient: Recipient{
+			ID: sender,
+		},
+		SenderAction: action,
+	})
+}
+
+func sendMessage(m interface{}) {
+
+	msg, err := json.Marshal(m)
 
 	if err != nil {
 		fmt.Println("Erro criando mensagem de retorno!")
@@ -207,6 +227,11 @@ type TextMessage struct {
 type MessageToSend struct {
 	Recipient Recipient   `json:"recipient"`
 	Message   TextMessage `json:"message"`
+}
+
+type ActionToSend struct {
+	Recipient    Recipient `json:"recipient"`
+	SenderAction string    `json:"sender_action"`
 }
 
 type Info struct {
