@@ -88,7 +88,7 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 				if message.Postback.Payload == "USER_DEFINED_PAYLOAD" {
 					msg = "Obrigado. Começou."
 				} else if message.Postback.Payload == "DEVELOPER_DEFINED_PAYLOAD_FOR_HELP" {
-					msg = "Em construção."
+					msg = "Mande a mensagem 'typing_on' e vc verá que estou digitando, mande 'typing_off' que eu paro, mande 'image' que eu mando uma imagem. Digite outra coisa e verá."
 				} else if message.Postback.Payload == "DEVELOPER_DEFINED_PAYLOAD_FOR_START_ORDER" {
 					msg = "Pode pedir."
 				}
