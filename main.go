@@ -242,8 +242,8 @@ type AttachmentPayload struct {
 }
 
 type Attachment struct {
-	Type    string            `json:"type"`
-	Payload AttachmentPayload `json:"payload"`
+	Type    string            `json:"type,omitempty"`
+	Payload AttachmentPayload `json:"payload,omitempty"`
 }
 
 type Message struct {
