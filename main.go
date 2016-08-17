@@ -72,6 +72,8 @@ func handlePOST(rw http.ResponseWriter, req *http.Request) {
 					go sendActionMessage(message.Sender.ID, "typing_on")
 				} else if message.Message.Text == "typing_off" {
 					go sendActionMessage(message.Sender.ID, "typing_off")
+				} else if message.Message.Text == "image" {
+					go sendAttachmentMessage(message.Sender.ID, "image", "http://cdn.morguefile.com/imageData/public/files/b/Baydog64/08/p/8b2facd9fffc84af6cbdc5e7e24ede70.jpg")
 				} else {
 					info, errr := getSenderInfo(message.Sender.ID)
 					msg := "Desculpe. Que é você?"
@@ -111,12 +113,28 @@ func checkSignature(bytes []byte, expectedSignature string) bool {
 	return true
 }
 
+func sendAttachmentMessage(sender string, attachmentType string, url string) {
+	sendMessage(MessageToSend{
+		Recipient: Recipient{
+			ID: sender,
+		},
+		Message: Message{
+			Attachment: Attachment{
+				Type: attachmentType,
+				Payload: AttachmentPayload{
+					Url: url,
+				},
+			},
+		},
+	})
+}
+
 func sendTextMessage(sender string, text string) {
 	sendMessage(MessageToSend{
 		Recipient: Recipient{
 			ID: sender,
 		},
-		Message: TextMessage{
+		Message: Message{
 			Text: text,
 		},
 	})
@@ -219,14 +237,24 @@ type Recipient struct {
 	ID string `json:"id"`
 }
 
-type TextMessage struct {
-	Text string `json:"text"`
+type AttachmentPayload struct {
+	Url string `json:"url,omitempty"`
+}
+
+type Attachment struct {
+	Type    string            `json:"type"`
+	Payload AttachmentPayload `json:"payload"`
+}
+
+type Message struct {
+	Text       string     `json:"text,omitempty"`
+	Attachment Attachment `json:"attachment,omitempty"`
 }
 
 // https://developers.facebook.com/docs/messenger-platform/send-api-reference/text-message
 type MessageToSend struct {
-	Recipient Recipient   `json:"recipient"`
-	Message   TextMessage `json:"message"`
+	Recipient Recipient `json:"recipient"`
+	Message   Message   `json:"message"`
 }
 
 type ActionToSend struct {
