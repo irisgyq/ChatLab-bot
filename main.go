@@ -119,9 +119,9 @@ func sendAttachmentMessage(sender string, attachmentType string, url string) {
 			ID: sender,
 		},
 		Message: Message{
-			Attachment: Attachment{
+			Attachment: &Attachment{
 				Type: attachmentType,
-				Payload: AttachmentPayload{
+				Payload: &AttachmentPayload{
 					Url: url,
 				},
 			},
@@ -242,13 +242,13 @@ type AttachmentPayload struct {
 }
 
 type Attachment struct {
-	Type    string            `json:"type,omitempty"`
-	Payload AttachmentPayload `json:"payload,omitempty"`
+	Type    string             `json:"type,omitempty"`
+	Payload *AttachmentPayload `json:"payload,omitempty"`
 }
 
 type Message struct {
-	Text       string     `json:"text,omitempty"`
-	Attachment Attachment `json:"attachment,omitempty"`
+	Text       string      `json:"text,omitempty"`
+	Attachment *Attachment `json:"attachment,omitempty"`
 }
 
 // https://developers.facebook.com/docs/messenger-platform/send-api-reference/text-message
