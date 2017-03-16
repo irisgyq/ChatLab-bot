@@ -34,7 +34,7 @@ type Messaging struct {
 	Recipient Recipient `json:"recipient"`
 	Timestamp int64     `json:"timestamp"`
 	Postback  Postback  `json:"postback"`
-	Message   Message   `json:"message"`
+	Message   Message   `json:"message,omitempty"`
 }
 
 type Sender struct {
@@ -132,7 +132,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 
 	for _, entry := range payload.Entries {
 		for _, message := range entry.Messaging {
-			if message.Message != nil {
+			if message.Message.Text != "" {
 				/*if message.Message.Text == "typing_on" {
 					go sendActionMessage(message.Sender.ID, "typing_on")
 				} else if message.Message.Text == "typing_off" {
@@ -140,8 +140,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 				} else if message.Message.Text == "image" {
 					go sendAttachmentMessage(message.Sender.ID, "image", "http://cdn.morguefile.com/imageData/public/files/b/Baydog64/08/p/8b2facd9fffc84af6cbdc5e7e24ede70.jpg")
 				}*/
-				mes := strings.ToUpper(message.Message)
-				if{
+				mes := strings.ToUpper(message.Message.Text)
 					info, errr := getSenderInfo(message.Sender.ID)
 					msg := "There is something wrong"
 					if errr == nil {
@@ -186,7 +185,6 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 			}
 
 		}
-	}
 
 	rw.WriteHeader(http.StatusOK)
 	rw.Write([]byte(`{"status":"ok"}`))
