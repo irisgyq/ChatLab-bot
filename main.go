@@ -55,7 +55,14 @@ type Postback struct {
 }
 
 type AttachmentPayload struct {
-	Url string `json:"url,omitempty"`
+	Title  string `json:"title, omitempty"`
+	Subtitle string `json:"subtitle, omitempty"`
+	Image_Url    string `json:"imageurl,omitempty"`
+	Buttons      []Button `json:"buttons"`
+}
+
+type Button struct {
+	Title string `json:"title"`
 }
 
 type Attachment struct {
@@ -146,40 +153,28 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 					if errr == nil {
 						if mes == "HI" {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. How are you today? Good or bad?"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "GOOD" {
-							msg = "That's great! What can I do for you? Study or entertainment?"
+							msg = "That's great! Do you want to learn something? You can input 'tools' to learn programming languages."
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "BAD" {
-							msg = "If you talk to me, you will be happy! What can I do for you? Study or entertainment?"
-						} else if mes == "STUDY" {
-							msg = "What kind of language do you want to learn?"
-						} else if mes == "GO" {
-							msg = "Go is a free and open source programming language created at Google in 2007 by Robert Griesemer, Rob Pike, and Ken Thompson. It is a compiled, statically typed language in the tradition of Algol and C, with garbage collection, limited structural typing,[3] memory safety features and CSP-style concurrent programming features added."
-						} else if mes == "JAVA" {
-							msg = "Java is a general-purpose computer programming language that is concurrent, class-based, object-oriented, and specifically designed to have as few implementation dependencies as possible."
-						} else if mes == "SCALA" {
-							msg = "Scala is a general-purpose programming language providing support for functional programming and a strong static type system. Designed to be concise, many of Scala's design decisions were designed to build from criticisms of Java."
-						} else if mes == "PROLOG" {
-							msg = "Prolog is a general-purpose logic programming language associated with artificial intelligence and computational linguistics."
-						} else if mes == "C" {
-							msg = "C is a general-purpose, imperative computer programming language, supporting structured programming, lexical variable scope and recursion, while a static type system prevents many unintended operations. "
-						} else if mes == "JAVASCRIPT" {
-							msg = "JavaScript is a high-level, dynamic, untyped, and interpreted programming language. It has been standardized in the ECMAScript language specification."
-						} else if mes == "RUBY" {
-							msg = "Ruby is a dynamic, reflective, object-oriented, general-purpose programming language. It was designed and developed in the mid-1990s by Yukihiro Matz Matsumoto in Japan."
-						} else if mes == "PYTHON" {
-							msg = "Python is a widely used high-level programming language for general-purpose programming, created by Guido van Rossum and first released in 1991. "
-						} else if mes == "LISP" {
-							msg = "Lisp is a family of computer programming languages with a long history and a distinctive, fully parenthesized prefix notation."
-						} else if mes == "ENTERTAINMENT" {
-							msg = "Let's play blackjack! You are the player, and I am the dealer."
+							msg = "I'm sorry. Maybe you can play some games. You can input 'tools' to play blackjack!"
+							go sendTextMessage(message.Sender.ID, msg)
+						} else if mes == "THANK YOU" || mes == "THANKS" || strings.Contains(mes, "APPRECIATE") {
+							msg = info.FirstName + " " + info.LastName + "You are welcome!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "BYE" || mes == "SEE YOU" || mes == "GOODBYE" {
-							msg = "Bye "+ info.FirstName + " " + info.LastName +"Have a nice day! See you next time."
+							msg = "Bye " + info.FirstName + " " + info.LastName + "Have a nice day! See you next time."
+							go sendTextMessage(message.Sender.ID, msg)
+						} else if mes == "TOOLS" {
+							go sendGenericMessage(message.Sender.ID)
 						} else {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
+							go sendTextMessage(message.Sender.ID, msg)
 						}
 
 					}
-					go sendTextMessage(message.Sender.ID, msg)
+
 				}
 
 			}
@@ -190,22 +185,6 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 	rw.Write([]byte(`{"status":"ok"}`))
 }
 
-/*func sendAttachmentMessage(sender string, attachmentType string, url string) {
-	sendMessage(MessageToSend{
-		Recipient: Recipient{
-			ID: sender,
-		},
-		Message: Message{
-			Attachment: &Attachment{
-				Type: attachmentType,
-				Payload: &AttachmentPayload{
-					Url: url,
-				},
-			},
-		},
-	})
-}*/
-
 func sendTextMessage(sender string, text string) {
 	sendMessage(MessageToSend{
 		Recipient: Recipient{
@@ -213,6 +192,28 @@ func sendTextMessage(sender string, text string) {
 		},
 		Message: Message{
 			Text: text,
+		},
+	})
+}
+
+func sendGenericMessage(sender string) {
+	sendMessage(MessageToSend{
+		Recipient: Recipient{
+			ID: sender,
+		},
+		Message: Message{
+			Attachment: &Attachment{
+				Type: "template",
+				Payload: &AttachmentPayload{
+					Title: "Chat Lab tools",
+					Image_Url: "./tools.png",
+					Buttons: {
+						Title: "Study",
+						Title: "Entertainment",
+						Title: "Calculator",
+					},
+				},
+			},
 		},
 	})
 }
