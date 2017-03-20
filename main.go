@@ -89,16 +89,10 @@ type MessageToSend struct {
 	Message   Message   `json:"message"`
 }
 
-type ActionToSend struct {
-	Recipient    Recipient `json:"recipient"`
-	SenderAction string    `json:"sender_action"`
-}
-
 type Info struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 }
-
 
 func main() {
 
@@ -185,10 +179,10 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 						} else if mes == "LISP" {
 							msg = "LISP is really good!"
 						} else if strings.Contains(mes, "BLACKJACK") {
-							go PlayBlackjack(message.Sender.ID)
+							go PlayBlackjack(message.Recipient.ID)
 							break
 						} else if strings.Contains(mes,"Calculator") {
-							go Calculate(message.Sender.ID)
+							//go Calculate(message.Sender.ID)
 							break
 						} else {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
@@ -499,6 +493,6 @@ func blackjack (a []int) bool {
 	return false;
 }
 
-func Calculate(sender string){
+/*func Calculate(sender string){
 
-}
+*/
