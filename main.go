@@ -59,6 +59,7 @@ type Recipient struct {
 type Message struct {
 	Text       string      `json:"text,omitempty"`
 	Attachment *Attachment `json:"attachment,omitempty"`
+	metadata string `json:"metadata,omitempty"`
 }
 
 type AttachmentPayload struct {
@@ -248,6 +249,7 @@ func sendGenericMessage(sender string) {
 						}},
 
 					}},
+			metadata: "ohohooh",
 
 				},
 
