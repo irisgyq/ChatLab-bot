@@ -240,11 +240,11 @@ func sendGenericMessage(sender string) {
 					Buttons: &[]Button{{
 							Type: "postback",
 							Title: "Study",
-							Payload: "What kind of PROGRAMMING LANGUAGES do you want to learn",
+							Payload: "PROGRAMMING LANGUAGES",
 						},{
 							Type: "postback",
 							Title: "entertainment",
-							Payload: "Let's play BLACKJACK! If you are ready, please input 'blackjack'",
+							Payload: "BLACKJACK",
 						}},
 
 					}},
