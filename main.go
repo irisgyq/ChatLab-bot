@@ -225,7 +225,7 @@ func sendTextMessage(sender string, text string) {
 }
 
 func sendGenericMessage(sender string) {
-	resp, err := http.Get("https://graph.facebook.com/v2.6/<USER_ID>?fields=locale")
+	resp, err := http.Get("https://graph.facebook.com/v2.6/"+sender+"?fields=locale")
 	if err!=nil {
 		//
 	}
