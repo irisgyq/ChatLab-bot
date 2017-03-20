@@ -78,7 +78,6 @@ type Button struct {
 	Title string `json:"title"`
 	Payload string `json:"payload"`
 	Url string `json:"url"`
-	Webview_height_ratio string `json:"webview_height_ratio"`
 	Messenger_extensions bool `json:"messenger_extensions"`
 }
 
@@ -245,7 +244,6 @@ func sendUrlMessage(sender string, url string) {
 					Buttons: &[]Button{{
 						Type:"web_url",
 						Url: url,
-						Webview_height_ratio: "fULL",
 						Messenger_extensions: true,
 					}},
 				},
@@ -283,13 +281,11 @@ func sendGenericMessage(sender string, city string) {
 							Type: "web_url",
 							Title: "Entertainment",
 							Url:"http://www.websudoku.com/",
-							Webview_height_ratio: "fULL",
 							Messenger_extensions: true,
 						},{
 							Type: "web_url",
 							Title: "Weather",
 							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
-							Webview_height_ratio: "fULL",
 							Messenger_extensions: true,
 						}},
 					}},
