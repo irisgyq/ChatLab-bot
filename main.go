@@ -247,7 +247,6 @@ func sendUrlMessage(sender string, url string) {
 							Type:"web_url",
 							Title: "weather",
 							Url: url,
-							Messenger_extensions: true,
 						}},
 					}},
 
@@ -279,12 +278,10 @@ func sendGenericMessage(sender string) {
 							Type: "web_url",
 							Url:"http://www.websudoku.com/",
 							Title: "Entertainment",
-							Messenger_extensions: true,
 						},{
 							Type: "web_url",
 							Url: "http://api.openweathermap.org/data/2.5/weather?q=beijing&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
 							Title: "Weather",
-							Messenger_extensions: true,
 						}},
 					}},
 				},
