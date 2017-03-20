@@ -78,7 +78,7 @@ type AttachmentPayload struct {
 type Button struct {
 	Type string `json:"type"`
 	Title string `json:"title"`
-	Payload string `json:"payload"`
+	Payload *Postback `json:"payload"`
 }
 
 type Attachment struct {
@@ -240,11 +240,15 @@ func sendGenericMessage(sender string) {
 					Buttons: &[]Button{{
 							Type: "postback",
 							Title: "Study",
-							Payload: "PROGRAMMING LANGUAGES",
+							Payload: &Postback{"" +
+								"PROGRAMMING_LANGUAGES",
+							},
 						},{
 							Type: "postback",
 							Title: "entertainment",
-							Payload: "BLACKJACK",
+							Payload: &Postback{
+								"BLACKJACK",
+							  },
 						}},
 
 					}},
