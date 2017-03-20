@@ -47,6 +47,7 @@ type Postback struct {
 
 type Sender struct {
 	ID string `json:"id"`
+	Location string `json:"location"`
 }
 
 type Recipient struct {
@@ -166,7 +167,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							msg = "Bye " + info.FirstName + " " + info.LastName + "Have a nice day! See you next time."
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
-							go sendGenericMessage(message.Sender.ID)
+							go sendGenericMessage(message.Sender.ID, message.Sender.Location)
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") || mes == "STUDY" {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
@@ -224,8 +225,8 @@ func sendTextMessage(sender string, text string) {
 	})
 }
 
-func sendGenericMessage(sender string) {
-	resp, err := http.Get("https://graph.facebook.com/v2.6/"+sender+"?fields=locale&access_token=EAARCbV0Nm8MBAKDNwgmMCBBvxZCfeql7peSivbnvkwHfboNmBVYuBVTtYFABXxp7SdB1XFqG4xtcVqg8LOMyoOctbhH6oOxgeunJ9IN7NfLYSCx9ZA6ZAGY9PEc3j1V35cB13UxkOcCuXpT91tUtyt94klpiDziQm5G5n1YagZDZD")
+func sendGenericMessage(sender string, city string) {
+	resp, err := http.Get("https://graph.facebook.com/v2.6/"+city+"?fields=locale&access_token=EAARCbV0Nm8MBAKDNwgmMCBBvxZCfeql7peSivbnvkwHfboNmBVYuBVTtYFABXxp7SdB1XFqG4xtcVqg8LOMyoOctbhH6oOxgeunJ9IN7NfLYSCx9ZA6ZAGY9PEc3j1V35cB13UxkOcCuXpT91tUtyt94klpiDziQm5G5n1YagZDZD")
 	if err!=nil {
 		//
 	}
