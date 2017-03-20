@@ -79,6 +79,7 @@ type Button struct {
 	Type string `json:"type"`
 	Title string `json:"title"`
 	Payload string `json:"payload"`
+	Url string `json:"url"`
 }
 
 type Attachment struct {
@@ -167,7 +168,6 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
 							go sendGenericMessage(message.Sender.ID)
-							http.HandleFunc("/webhook", Handle)
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
@@ -239,9 +239,9 @@ func sendGenericMessage(sender string) {
 					Template_type: "button",
 					Text: "These are some tools.",
 					Buttons: &[]Button{{
-							Type: "postback",
+							Type: "web_url",
 							Title: "Study",
-							Payload: "test",
+							Url: "test",
 						},{
 							Type: "postback",
 							Title: "entertainment",
