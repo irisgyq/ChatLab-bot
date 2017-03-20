@@ -236,7 +236,7 @@ func sendGenericMessage(sender string) {
 					Elements: &[]Elements{{
 						Title: "Tools",
 						Subtitle: "You can choose one of them!",
-						Image_Url: "./tools.png",
+						Image_Url: "http://chuantu.biz/t5/50/1490034411x2890154370.png",
 						Buttons: &[]Button{{
 							Type: "postback",
 							Title: "Study",
