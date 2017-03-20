@@ -225,10 +225,13 @@ func sendTextMessage(sender string, text string) {
 }
 
 func sendGenericMessage(sender string) {
-	info, errr := getSenderInfo(sender)
-	if errr!=nil {
+	resp, err := http.Get("https://graph.facebook.com/v2.6/<USER_ID>?fields=locale")
+	if err!=nil {
 		//
 	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+
 	sendMessage(MessageToSend{
 		Recipient: Recipient{
 			ID: sender,
@@ -253,7 +256,7 @@ func sendGenericMessage(sender string) {
 						},{
 							Type: "web_url",
 							Title: "Weather",
-							Url: "http://api.openweathermap.org/data/2.5/weather?q="+info.Location+"&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
+							Url: "http://api.openweathermap.org/data/2.5/weather?q="+string(body)+"&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
 						}},
 					}},
 				},
