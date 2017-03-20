@@ -167,7 +167,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
 							msg = "OH"
-							go sendGenericMessage(message.Sender.ID, msg)
+							go sendGenericMessage(message, msg)
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
@@ -197,9 +197,6 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if strings.Contains(mes, "BLACKJACK") {
 							go PlayBlackjack(message.Sender.ID)
-						} else if strings.Contains(mes,"Calculator") {
-							//go Calculate(message.Sender.ID)
-							break
 						} else {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
 							go sendTextMessage(message.Sender.ID, msg)
@@ -236,7 +233,6 @@ func sendGenericMessage(sender string, text string) {
 			ID: sender,
 		},
 		Message: Message{
-			Text: text,
 			Attachment: &Attachment{
 				Type: "template",
 				Payload: &AttachmentPayload{
@@ -250,10 +246,6 @@ func sendGenericMessage(sender string, text string) {
 							Type: "postback",
 							Title: "entertainment",
 							Payload: "Let's play blackjack! If you are ready, please input 'blackjack'",
-						},{
-							Type: "postback",
-							Title: "calculator",
-							Payload: "Use this simple calculator",
 						}},
 
 					}},
@@ -506,6 +498,3 @@ func blackjack (a []int) bool {
 	return false;
 }
 
-/*func Calculate(sender string){
-
-*/
