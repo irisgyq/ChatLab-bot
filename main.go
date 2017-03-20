@@ -152,7 +152,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 					info, errr := getSenderInfo(message.Sender.ID)
 					msg := "Tooo is something wrong"
 					if errr == nil {
-						if mes=="HI" || mes == "HELLO"{
+						if mes == "HI" || mes == "HELLO"{
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. How are you today? Good or bad?"
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "GOOD" || mes=="GREAT" {
@@ -169,7 +169,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
 							go sendGenericMessage(message.Sender.ID)
-						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") || mes == "STUDY" {
+						} else if mes== "PROGRAMMING LANGUAGES" || mes == "STUDY" {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "GO" || mes == "GOLANG" {
@@ -196,11 +196,11 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 						} else if mes == "LISP" {
 							msg = "LISP is really good!"
 							go sendTextMessage(message.Sender.ID, msg)
-						}  else if strings.Contains(mes, "WEATHER") {
+						}  else if mes == "WEATHER" {
 							msg = "Please input a city and plus a &, like WashingtonDC&."
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if strings.HasSuffix(mes, "&") {
-							go sendUrlMessage(message.Sender.ID, "http://api.openweathermap.org/data/2.5/weather?q="+mes+"mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518")
+							go sendUrlMessage(message.Sender.ID, "http://api.openweathermap.org/data/2.5/weather?q="+message.Message.Text+"mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518")
 						} else {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
 							go sendTextMessage(message.Sender.ID, msg)
@@ -248,7 +248,7 @@ func sendUrlMessage(sender string, url string) {
 							Title: "weather",
 							Url: url,
 							Messenger_extensions: true,
-						}},ç
+						}},
 					}},
 
 				},
@@ -277,13 +277,13 @@ func sendGenericMessage(sender string) {
 							Payload: "PROGRAMMING LANGUAGES",
 						}, {
 							Type: "web_url",
-							Title: "Entertainment",
 							Url:"http://www.websudoku.com/",
+							Title: "Entertainment",
 							Messenger_extensions: true,
 						},{
 							Type: "web_url",
-							Title: "Weather",
 							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
+							Title: "Weather",
 							Messenger_extensions: true,
 						}},
 					}},
