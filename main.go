@@ -265,7 +265,7 @@ func sendMessage(m interface{}) {
 	resp, err := doRequest("POST", FacebookEndPoint, bytes.NewReader(msg))
 
 	if err != nil {
-		fmt.Println("There is something wrong!")
+		fmt.Println("The is something wrong!")
 		fmt.Println(err)
 	}
 	defer resp.Body.Close()
@@ -298,7 +298,7 @@ func getSenderInfo(userID string) (*Info, error) {
 	defer resp.Body.Close()
 	read, err := ioutil.ReadAll(resp.Body)
 	if resp.StatusCode != http.StatusOK {
-		fmt.Println("The is something wrong!")
+		fmt.Println("There is something wrong!")
 		fmt.Println(string(read))
 		return nil, errors.New(string(read))
 	}
