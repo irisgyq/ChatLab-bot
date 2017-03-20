@@ -146,7 +146,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 			if message.Message.Text != "" {
 				mes := strings.ToUpper(message.Message.Text)
 					info, errr := getSenderInfo(message.Sender.ID)
-					msg := "There is something wrong"
+					msg := "Tooo is something wrong"
 					if errr == nil {
 						if mes == "HI" {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. How are you today? Good or bad?"
