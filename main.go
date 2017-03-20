@@ -295,7 +295,7 @@ func doRequest(method string, url string, body io.Reader) (*http.Response, error
 
 func getSenderInfo(userID string) (*Info, error) {
 	graphAPI := "https://graph.facebook.com"
-	resp, err := doRequest("GET", fmt.Sprintf(graphAPI+"/v2.6/me", userID), nil)
+	resp, err := doRequest("GET", fmt.Sprintf(graphAPI+"/v2.6/%s?fields=first_name,last_name", userID), nil)
 	if err != nil {
 		return nil, err
 	}
