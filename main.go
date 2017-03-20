@@ -350,8 +350,8 @@ func PlayBlackjack(sender string) {
 				for (isPValid) {
 					sendTextMessage(sender, "Does the player want one more card? yes or hit")
 					payload := &Payload{}
-					for _, entry := range payload.Entries {
-						for _, message := range entry.Messaging {
+					entry := payload.Entries[0]
+					message := entry.Messaging[0]
 							if message.Message.Text != "" {
 								mes := message.Message.Text
 								//inputReader := bufio.NewReader(os.Stdin)
@@ -388,8 +388,8 @@ func PlayBlackjack(sender string) {
 
 								}
 							}
-						}
-					}
+
+
 				}
 
 				sendTextMessage(sender,"The dealer's second card is: "+strconv.Itoa(dealerCard[1]))
@@ -398,69 +398,66 @@ func PlayBlackjack(sender string) {
 				isDValid := true
 				for (isDValid) {
 					for dealerSum < 17 {
-						sendTextMessage(sender,"Because the sum of dealer's cards is less than 17, he must add one more card.")
+						sendTextMessage(sender, "Because the sum of dealer's cards is less than 17, he must add one more card.")
 						dealerCard = append(dealerCard, pop(&cards))
-						sendTextMessage(sender,"The new card is:"+strconv.Itoa(dealerCard[len(dealerCard) - 1]))
+						sendTextMessage(sender, "The new card is:" + strconv.Itoa(dealerCard[len(dealerCard) - 1]))
 						dealerSum += dealerCard[len(dealerCard) - 1]
-						sendTextMessage(sender,"The sum of dealer's cards is:"+strconv.Itoa(dealerSum))
+						sendTextMessage(sender, "The sum of dealer's cards is:" + strconv.Itoa(dealerSum))
 
 						if dealerSum == 21 {
-							sendTextMessage(sender,"The dealer has 21 points!")
+							sendTextMessage(sender, "The dealer has 21 points!")
 							break
 						}
 						if dealerSum > 21 {
-							sendTextMessage(sender,"dealer's cards are busting.")
+							sendTextMessage(sender, "dealer's cards are busting.")
 							DisBust = true
 							break
 						}
 					}
 
 					if dealerSum < 21 {
-						sendTextMessage(sender,"Dose the dealer want one more card?")
+						sendTextMessage(sender, "Dose the dealer want one more card?")
 						//inputReader := bufio.NewReader(os.Stdin)
 						//input, err := inputReader.ReadString('\n')
 
 						//if err != nil {
-							//sendTextMessage(sender,"Your input is wrong.")
-							//return
+						//sendTextMessage(sender,"Your input is wrong.")
+						//return
 						//}
 						payload := &Payload{}
-						for _, entry := range payload.Entries {
-							for _, message := range entry.Messaging {
-								if message.Message.Text != "" {
-									mes := message.Message.Text
+						entry := payload.Entries[0]
+						message := entry.Messaging[0]
+						if message.Message.Text != "" {
+							mes := message.Message.Text
 
-									switch mes {
-									case "yes\n":{
-										dealerCard = append(dealerCard, pop(&cards))
-										go sendTextMessage(sender, "This card is:")
-										go sendTextMessage(sender, strconv.Itoa(dealerCard[len(dealerCard) - 1]))
-										dealerSum += dealerCard[len(dealerCard) - 1]
-										go sendTextMessage(sender, "The sum of dealer's card is:" + strconv.Itoa(dealerSum))
+							switch mes {
+							case "yes\n":{
+								dealerCard = append(dealerCard, pop(&cards))
+								go sendTextMessage(sender, "This card is:")
+								go sendTextMessage(sender, strconv.Itoa(dealerCard[len(dealerCard) - 1]))
+								dealerSum += dealerCard[len(dealerCard) - 1]
+								go sendTextMessage(sender, "The sum of dealer's card is:" + strconv.Itoa(dealerSum))
 
-										if blackjack(dealerCard) {
-											go sendTextMessage(sender, "The dealer has 21 points!")
-											isDValid = false
-											break
-										} else if dealerSum > 21 {
-											go sendTextMessage(sender, "dealer's cards are busting.")
-											DisBust = true
-											isDValid = false
-											break
-										}
-									}
-									case "hit\n" :{
-										isDValid = false
-										break
-									}
-
-									}
+								if blackjack(dealerCard) {
+									go sendTextMessage(sender, "The dealer has 21 points!")
+									isDValid = false
+									break
+								} else if dealerSum > 21 {
+									go sendTextMessage(sender, "dealer's cards are busting.")
+									DisBust = true
+									isDValid = false
+									break
 								}
 							}
-						}
+							case "hit\n" :{
+								isDValid = false
+								break
+							}
 
-					} else {
-						isDValid = false
+							}
+						} else {
+							isDValid = false
+						}
 					}
 				}
 
