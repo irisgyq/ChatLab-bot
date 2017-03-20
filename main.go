@@ -68,7 +68,7 @@ type AttachmentPayload struct {
 type Elements struct {
 	Title string `json:"title"`
 	Subtitle string `json:"subtitle, omitempty"`
-	Image_Url   string `json:"imageurl,omitempty"`
+	Image_Url   string `json:"image_url,omitempty"`
 	Buttons     *[]Button `json:"buttons"`
 }
 
