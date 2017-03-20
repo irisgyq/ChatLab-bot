@@ -47,7 +47,6 @@ type Postback struct {
 
 type Sender struct {
 	ID string `json:"id"`
-	Location string `json:"location"`
 }
 
 type Recipient struct {
@@ -77,8 +76,7 @@ type Button struct {
 	Type string `json:"type"`
 	Title string `json:"title"`
 	Payload string `json:"payload"`
-	Url string `json:"url"`
-	Messenger_extensions bool `json:"messenger_extensions"`
+	Url string `json:"url,omitempty"`
 }
 
 type Attachment struct {
@@ -220,6 +218,40 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 	rw.Write([]byte(`{"status":"ok"}`))
 }
 
+func sendGenericMessage(sender string) {
+	sendMessage(MessageToSend{
+		Recipient: Recipient{
+			ID: sender,
+		},
+		Message: Message{
+			Attachment: &Attachment{
+				Type: "template",
+				Payload: &AttachmentPayload{
+					Template_type: "generic",
+					Elements: &[]Elements{{
+						Title: "Tools",
+						Subtitle: "You can choose one of them!",
+						Image_Url: "http://chuantu.biz/t5/50/1490034411x2890154370.png",
+						Buttons: &[]Button{{
+							Type: "postback",
+							Title: "Study",
+							Payload: "PROGRAMMING LANGUAGES",
+						},{
+							Type: "web_url",
+							Url:"http://www.websudoku.com/",
+							Title: "Entertainment",
+						},{
+							Type: "web_url",
+							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
+							Title: "Weather",
+						}},
+					}},
+				},
+			},
+		},
+	},)
+}
+
 func sendTextMessage(sender string, text string) {
 	sendMessage(MessageToSend{
 		Recipient: Recipient{
@@ -256,39 +288,7 @@ func sendUrlMessage(sender string, url string) {
 	})
 }
 
-func sendGenericMessage(sender string) {
-	sendMessage(MessageToSend{
-		Recipient: Recipient{
-			ID: sender,
-		},
-		Message: Message{
-			Attachment: &Attachment{
-				Type: "template",
-				Payload: &AttachmentPayload{
-					Template_type: "generic",
-					Elements: &[]Elements{{
-						Title: "Tools",
-						Subtitle: "You can choose one of them!",
-						Image_Url: "http://chuantu.biz/t5/50/1490034411x2890154370.png",
-						Buttons: &[]Button{{
-							Type: "postback",
-							Title: "Study",
-							Payload: "PROGRAMMING LANGUAGES",
-						//}, //{
-							//Type: "web_url",
-							//Url:"http://www.websudoku.com/",
-							//Title: "Entertainment",
-						}},/*,{
-							Type: "web_url",
-							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
-							Title: "Weather",
-						}*/
-					}},
-				},
-			},
-		},
-	},)
-}
+
 
 func sendMessage(m interface{}) {
 
