@@ -298,7 +298,7 @@ func getSenderInfo(userID string) (*Info, error) {
 	defer resp.Body.Close()
 	read, err := ioutil.ReadAll(resp.Body)
 	if resp.StatusCode != http.StatusOK {
-		fmt.Println("There is something wrong!")
+		fmt.Println("Tttt is something wrong!")
 		fmt.Println(string(read))
 		return nil, errors.New(string(read))
 	}
