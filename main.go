@@ -57,13 +57,12 @@ type Recipient struct {
 type Message struct {
 	Text       string      `json:"text,omitempty"`
 	Attachment *Attachment `json:"attachment,omitempty"`
-	Url string `json:"url"`
 }
 
 type AttachmentPayload struct {
 	Template_type string `json:"template_type"`
 	//Text string `json:"text"`
-	//Buttons *[]Button `json:"buttons"`
+	Buttons *[]Button `json:"buttons"`
 	Elements      *[]Elements `json:"elements"`
 }
 
@@ -79,6 +78,8 @@ type Button struct {
 	Title string `json:"title"`
 	Payload string `json:"payload"`
 	Url string `json:"url"`
+	Webview_height_ratio string `json:"webview_height_ratio"`
+	Messenger_extensions bool `json:"messenger_extensions"`
 }
 
 type Attachment struct {
@@ -237,7 +238,18 @@ func sendUrlMessage(sender string, url string) {
 			ID: sender,
 		},
 		Message: Message{
-			Url: url,
+			Attachment: &Attachment{
+				Type: "template",
+				Payload: &AttachmentPayload{
+					Template_type: "button",
+					Buttons: &[]Button{{
+						Type:"web_url",
+						Url: url,
+						Webview_height_ratio: "full",
+						Messenger_extensions: true,
+					}},
+				},
+			},
 		},
 	})
 }
