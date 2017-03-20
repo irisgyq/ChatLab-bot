@@ -62,7 +62,7 @@ type Message struct {
 type AttachmentPayload struct {
 	Template_type string `json:"template_type"`
 	//Text string `json:"text"`
-	Buttons *[]Button `json:"buttons"`
+	//Buttons *[]Button `json:"buttons"`
 	Elements      *[]Elements `json:"elements"`
 }
 
@@ -152,7 +152,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 					info, errr := getSenderInfo(message.Sender.ID)
 					msg := "Tooo is something wrong"
 					if errr == nil {
-						if strings.Contains(mes,"HI") ||  strings.Contains(mes,"HELLO"){
+						if mes=="HI" || mes == "HELLO"{
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. How are you today? Good or bad?"
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "GOOD" || mes=="GREAT" {
@@ -168,7 +168,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							msg = "Bye " + info.FirstName + " " + info.LastName + "Have a nice day! See you next time."
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
-							go sendGenericMessage(message.Sender.ID, message.Sender.Location)
+							go sendGenericMessage(message.Sender.ID)
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") || mes == "STUDY" {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
@@ -240,26 +240,24 @@ func sendUrlMessage(sender string, url string) {
 			Attachment: &Attachment{
 				Type: "template",
 				Payload: &AttachmentPayload{
-					Template_type: "button",
-					Buttons: &[]Button{{
-						Type:"web_url",
-						Url: url,
-						Messenger_extensions: true,
+					Template_type: "gneric",
+					Elements: &[]Elements{{
+						Title:"Weather",
+						Buttons: &[]Button{{
+							Type:"web_url",
+							Title: "weather",
+							Url: url,
+							Messenger_extensions: true,
+						}},ç
 					}},
+
 				},
 			},
 		},
 	})
 }
 
-func sendGenericMessage(sender string, city string) {
-	/*resp, err := http.Get("https://graph.facebook.com/v2.8/city/fields=city")
-	if err!=nil {
-		//
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)*/
-
+func sendGenericMessage(sender string) {
 	sendMessage(MessageToSend{
 		Recipient: Recipient{
 			ID: sender,
