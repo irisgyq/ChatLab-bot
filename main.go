@@ -255,7 +255,7 @@ func sendMessage(m interface{}) {
 	msg, err := json.Marshal(m)
 
 	if err != nil {
-		fmt.Println("There is something wrong!")
+		fmt.Println("Thrrr is something wrong!")
 		fmt.Println(err)
 	}
 
