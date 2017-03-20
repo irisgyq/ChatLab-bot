@@ -150,37 +150,51 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 					if errr == nil {
 						if mes == "HI" {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. How are you today? Good or bad?"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "GOOD" {
 							msg = "That's great! Do you want to learn something? You can input 'tools' to learn programming languages."
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "BAD" {
 							msg = "I'm sorry. Maybe you can play some games. You can input 'tools' to play blackjack!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "THANK YOU" || mes == "THANKS" || strings.Contains(mes, "APPRECIATE") {
 							msg = info.FirstName + " " + info.LastName + "You are welcome!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "BYE" || mes == "SEE YOU" || mes == "GOODBYE" {
 							msg = "Bye " + info.FirstName + " " + info.LastName + "Have a nice day! See you next time."
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
 							go sendGenericMessage(message.Sender.ID)
+							break;
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") {
 							msg = "What kind of programming languages do you want to learn"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "GO" || mes == "GOLANG" {
 							msg = "GO is really good!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "PYTHON" {
 							msg = "Python is really good!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "RUBY" || mes == "RUBY ON RAILS" {
 							msg = "Ruby is really good!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "Java" {
 							msg = "Java is really good!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "JavaScript" || mes == "JS" {
 							msg = "JavaScript is really good!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "SCALA"{
 							msg = "SCALA is really good!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "PROLOG"  {
 							msg = "Prolog is really good!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "LISP" {
 							msg = "LISP is really good!"
+							go sendTextMessage(message.Sender.ID, msg)
 						} else if strings.Contains(mes, "BLACKJACK") {
 							go PlayBlackjack(message.Sender.ID)
-							break
 						} else if strings.Contains(mes,"Calculator") {
 							//go Calculate(message.Sender.ID)
 							break
@@ -188,7 +202,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
 						}
 
-						go sendTextMessage(message.Sender.ID, msg)
+
 
 					}
 
