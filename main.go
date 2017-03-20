@@ -165,7 +165,6 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
 							go sendGenericMessage(message.Sender.ID)
-							break;
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
@@ -240,7 +239,7 @@ func sendGenericMessage(sender string) {
 					Elements: &[]Elements{{
 						Title: "Tools",
 						Subtitle: "You can study programming languages, play blackjack or use calculator",
-						Image_Url: "./tool.png",
+						//Image_Url: "./tool.png",
 						Buttons: &[]Button{{
 							Type: "postback",
 							Title: "Study",
