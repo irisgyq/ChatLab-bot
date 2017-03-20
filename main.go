@@ -226,7 +226,7 @@ func sendTextMessage(sender string, text string) {
 }
 
 func sendGenericMessage(sender string, city string) {
-	resp, err := http.Get("https://graph.facebook.com/v2.8/"+city)
+	resp, err := http.Get("https://graph.facebook.com/v2.8/location/fields=city")
 	if err!=nil {
 		//
 	}
