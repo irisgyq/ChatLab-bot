@@ -201,6 +201,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							break
 						} else {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
+							go sendTextMessage(message.Sender.ID, msg)
 						}
 
 
@@ -234,6 +235,7 @@ func sendGenericMessage(sender string) {
 			ID: sender,
 		},
 		Message: Message{
+			Text: "test",
 			Attachment: &Attachment{
 				Type: "template",
 				Payload: &AttachmentPayload{
