@@ -241,7 +241,7 @@ func sendGenericMessage(sender string) {
 					Buttons: &[]Button{{
 							Type: "web_url",
 							Title: "Study",
-							Url: "test",
+							Url: "https://google.com",
 						},{
 							Type: "postback",
 							Title: "entertainment",
