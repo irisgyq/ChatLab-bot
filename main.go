@@ -13,7 +13,7 @@ import (
 	"strings"
 	"math/rand"
 	"time"
-	"bufio"
+	//"bufio"
 	"strconv"
 )
 
@@ -59,7 +59,6 @@ type Recipient struct {
 type Message struct {
 	Text       string      `json:"text,omitempty"`
 	Attachment *Attachment `json:"attachment,omitempty"`
-	metadata string `json:"metadata,omitempty"`
 }
 
 type AttachmentPayload struct {
@@ -151,13 +150,13 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 					info, errr := getSenderInfo(message.Sender.ID)
 					msg := "Tooo is something wrong"
 					if errr == nil {
-						if mes == "HI" {
+						if strings.Contains(mes,"HI") ||  strings.Contains(mes,"HELLO"){
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. How are you today? Good or bad?"
 							go sendTextMessage(message.Sender.ID, msg)
-						} else if mes == "GOOD" {
+						} else if mes == "GOOD" || mes=="GREAT" {
 							msg = "That's great! Do you want to learn something? You can input 'tools' to learn programming languages."
 							go sendTextMessage(message.Sender.ID, msg)
-						} else if mes == "BAD" {
+						} else if mes == "BAD" || mes == "FINE"{
 							msg = "I'm sorry. Maybe you can play some games. You can input 'tools' to play blackjack!"
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "THANK YOU" || mes == "THANKS" || strings.Contains(mes, "APPRECIATE") {
@@ -168,6 +167,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
 							go sendGenericMessage(message.Sender.ID)
+							http.HandleFunc("/webhook", Handle)
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
@@ -196,7 +196,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							msg = "LISP is really good!"
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if strings.Contains(mes, "BLACKJACK") {
-							go PlayBlackjack(message.Sender.ID)
+							PlayBlackjack(message.Sender.ID)
 						} else {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
 							go sendTextMessage(message.Sender.ID, msg)
@@ -249,7 +249,6 @@ func sendGenericMessage(sender string) {
 						}},
 
 					}},
-			metadata: "ohohooh",
 
 				},
 
@@ -323,125 +322,141 @@ func PlayBlackjack(sender string) {
 		PisBust := false
 		DisBust := false
 
-		go sendTextMessage(sender,"Game begins...")
+		sendTextMessage(sender,"Game begins...")
 
 		cards := shuffle(initcards)
 
 		playerCard = append(playerCard, pop(&cards))
-		go sendTextMessage(sender,"The player's first card is: "+strconv.Itoa(playerCard[0]))
+		sendTextMessage(sender,"The player's first card is: "+strconv.Itoa(playerCard[0]))
 		dealerCard = append(dealerCard, pop(&cards))
-		go sendTextMessage(sender, "The dealer's first card is: "+strconv.Itoa(dealerCard[0]))
+		sendTextMessage(sender, "The dealer's first card is: "+strconv.Itoa(dealerCard[0]))
 		playerCard = append(playerCard, pop(&cards))
-		go sendTextMessage(sender, "The player's second card is: "+strconv.Itoa(playerCard[1]))
+		sendTextMessage(sender, "The player's second card is: "+strconv.Itoa(playerCard[1]))
 
 		if blackjack(playerCard) {
-			go sendTextMessage(sender, "The player has blackjack! Game is over, the player is the winner.")
+			sendTextMessage(sender, "The player has blackjack! Game is over, the player is the winner.")
 		} else {
 			dealerCard = append(dealerCard, pop(&cards))
 			if blackjack(dealerCard) {
-				go sendTextMessage(sender, "The dealer's second card is: "+strconv.Itoa(dealerCard[1]))
-				go sendTextMessage(sender, "The dealer has blackjack! Game is over, the dealer is the winner.")
+				sendTextMessage(sender, "The dealer's second card is: "+strconv.Itoa(dealerCard[1]))
+				sendTextMessage(sender, "The dealer has blackjack! Game is over, the dealer is the winner.")
 			} else {
 				playerSum := playerCard[0] + playerCard[1]
 				dealerSum := dealerCard[0] + dealerCard[1]
 
-				go sendTextMessage(sender, "The sum of player's cards is:" +strconv.Itoa(playerSum))
+				sendTextMessage(sender, "The sum of player's cards is:" +strconv.Itoa(playerSum))
 
 				isPValid := true
 				for (isPValid) {
-					go sendTextMessage(sender,"Does the player want one more card? yes or hit")
-					inputReader := bufio.NewReader(os.Stdin)
-					input, err := inputReader.ReadString('\n')
+					sendTextMessage(sender, "Does the player want one more card? yes or hit")
+					payload := &Payload{}
+					for _, entry := range payload.Entries {
+						for _, message := range entry.Messaging {
+							if message.Message.Text != "" {
+								mes := message.Message.Text
+								//inputReader := bufio.NewReader(os.Stdin)
+								//input, err := inputReader.ReadString('\n')
 
-					if err != nil {
-						go sendTextMessage(sender, "Your input is wrong.")
-						return
-					}
+								//if err != nil {
+								//go sendTextMessage(sender, "Your input is wrong.")
+								//return
+								//}
 
-					switch input {
-					case "yes\n":{
-						playerCard = append(playerCard, pop(&cards))
-						go sendTextMessage(sender,"This card is:"+strconv.Itoa(playerCard[len(playerCard) - 1]))
-						playerSum += playerCard[len(playerCard) - 1]
-						go sendTextMessage(sender, "The sum of player's card is:"+strconv.Itoa(playerSum))
+								switch mes {
+								case "yes\n":{
+									playerCard = append(playerCard, pop(&cards))
+									go sendTextMessage(sender, "This card is:" + strconv.Itoa(playerCard[len(playerCard) - 1]))
+									playerSum += playerCard[len(playerCard) - 1]
+									go sendTextMessage(sender, "The sum of player's card is:" + strconv.Itoa(playerSum))
 
-						if blackjack(playerCard) {
-							go sendTextMessage(sender,"The player has 21 points!")
-							isPValid = false
-							break
-						} else if playerSum > 21 {
-							go sendTextMessage(sender, "Player's cards are busting.")
-							PisBust = true
-							isPValid = false
-							break
+									if blackjack(playerCard) {
+										go sendTextMessage(sender, "The player has 21 points!")
+										isPValid = false
+										break
+									} else if playerSum > 21 {
+										go sendTextMessage(sender, "Player's cards are busting.")
+										PisBust = true
+										isPValid = false
+										break
+									}
+									break
+								}
+								case "hit\n" :{
+									isPValid = false
+									break
+								}
+
+								}
+							}
 						}
-						break
-					}
-					case "hit\n" :{
-						isPValid = false
-						break
-					}
-
 					}
 				}
 
-				go sendTextMessage(sender,"The dealer's second card is: "+strconv.Itoa(dealerCard[1]))
-				go sendTextMessage(sender, "The sum of dealer's cards is:"+strconv.Itoa(dealerSum))
+				sendTextMessage(sender,"The dealer's second card is: "+strconv.Itoa(dealerCard[1]))
+				sendTextMessage(sender, "The sum of dealer's cards is:"+strconv.Itoa(dealerSum))
 
 				isDValid := true
 				for (isDValid) {
 					for dealerSum < 17 {
-						go sendTextMessage(sender,"Because the sum of dealer's cards is less than 17, he must add one more card.")
+						sendTextMessage(sender,"Because the sum of dealer's cards is less than 17, he must add one more card.")
 						dealerCard = append(dealerCard, pop(&cards))
-						go sendTextMessage(sender,"The new card is:"+strconv.Itoa(dealerCard[len(dealerCard) - 1]))
+						sendTextMessage(sender,"The new card is:"+strconv.Itoa(dealerCard[len(dealerCard) - 1]))
 						dealerSum += dealerCard[len(dealerCard) - 1]
-						go sendTextMessage(sender,"The sum of dealer's cards is:"+strconv.Itoa(dealerSum))
+						sendTextMessage(sender,"The sum of dealer's cards is:"+strconv.Itoa(dealerSum))
 
 						if dealerSum == 21 {
-							go sendTextMessage(sender,"The dealer has 21 points!")
+							sendTextMessage(sender,"The dealer has 21 points!")
 							break
 						}
 						if dealerSum > 21 {
-							go sendTextMessage(sender,"dealer's cards are busting.")
+							sendTextMessage(sender,"dealer's cards are busting.")
 							DisBust = true
 							break
 						}
 					}
 
 					if dealerSum < 21 {
-						go sendTextMessage(sender,"Dose the dealer want one more card?")
-						inputReader := bufio.NewReader(os.Stdin)
-						input, err := inputReader.ReadString('\n')
+						sendTextMessage(sender,"Dose the dealer want one more card?")
+						//inputReader := bufio.NewReader(os.Stdin)
+						//input, err := inputReader.ReadString('\n')
 
-						if err != nil {
-							go sendTextMessage(sender,"Your input is wrong.")
-							return
-						}
+						//if err != nil {
+							//sendTextMessage(sender,"Your input is wrong.")
+							//return
+						//}
+						payload := &Payload{}
+						for _, entry := range payload.Entries {
+							for _, message := range entry.Messaging {
+								if message.Message.Text != "" {
+									mes := message.Message.Text
 
-						switch input {
-						case "yes\n":{
-							dealerCard = append(dealerCard, pop(&cards))
-							go sendTextMessage(sender,"This card is:")
-							go sendTextMessage(sender,strconv.Itoa(dealerCard[len(dealerCard) - 1]))
-							dealerSum += dealerCard[len(dealerCard) - 1]
-							go sendTextMessage(sender,"The sum of dealer's card is:"+strconv.Itoa(dealerSum))
+									switch mes {
+									case "yes\n":{
+										dealerCard = append(dealerCard, pop(&cards))
+										go sendTextMessage(sender, "This card is:")
+										go sendTextMessage(sender, strconv.Itoa(dealerCard[len(dealerCard) - 1]))
+										dealerSum += dealerCard[len(dealerCard) - 1]
+										go sendTextMessage(sender, "The sum of dealer's card is:" + strconv.Itoa(dealerSum))
 
-							if blackjack(dealerCard) {
-								go sendTextMessage(sender,"The dealer has 21 points!")
-								isDValid = false
-								break
-							} else if dealerSum > 21 {
-								go sendTextMessage(sender,"dealer's cards are busting.")
-								DisBust = true
-								isDValid = false
-								break
+										if blackjack(dealerCard) {
+											go sendTextMessage(sender, "The dealer has 21 points!")
+											isDValid = false
+											break
+										} else if dealerSum > 21 {
+											go sendTextMessage(sender, "dealer's cards are busting.")
+											DisBust = true
+											isDValid = false
+											break
+										}
+									}
+									case "hit\n" :{
+										isDValid = false
+										break
+									}
+
+									}
+								}
 							}
-						}
-						case "hit\n" :{
-							isDValid = false
-							break
-						}
-
 						}
 
 					} else {
