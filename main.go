@@ -93,6 +93,7 @@ type MessageToSend struct {
 type Info struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
+	Location string `json:"locale"`
 }
 
 func main() {
@@ -224,6 +225,10 @@ func sendTextMessage(sender string, text string) {
 }
 
 func sendGenericMessage(sender string) {
+	info, errr := getSenderInfo(sender)
+	if errr!=nil {
+		//
+	}
 	sendMessage(MessageToSend{
 		Recipient: Recipient{
 			ID: sender,
@@ -248,7 +253,7 @@ func sendGenericMessage(sender string) {
 						},{
 							Type: "web_url",
 							Title: "Weather",
-							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
+							Url: "http://api.openweathermap.org/data/2.5/weather?q="+info.Location+"&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
 						}},
 					}},
 				},
