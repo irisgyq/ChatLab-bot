@@ -166,7 +166,8 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							msg = "Bye " + info.FirstName + " " + info.LastName + "Have a nice day! See you next time."
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
-							go sendGenericMessage(message.Sender.ID)
+							msg = "OH"
+							go sendGenericMessage(message.Sender.ID, msg)
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
@@ -229,13 +230,13 @@ func sendTextMessage(sender string, text string) {
 	})
 }
 
-func sendGenericMessage(sender string) {
+func sendGenericMessage(sender string, text string) {
 	sendMessage(MessageToSend{
 		Recipient: Recipient{
 			ID: sender,
 		},
 		Message: Message{
-			Text: "test",
+			Text: text,
 			Attachment: &Attachment{
 				Type: "template",
 				Payload: &AttachmentPayload{
