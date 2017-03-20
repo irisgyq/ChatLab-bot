@@ -159,7 +159,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 						} else if mes == "BYE" || mes == "SEE YOU" || mes == "GOODBYE" {
 							msg = "Bye " + info.FirstName + " " + info.LastName + "Have a nice day! See you next time."
 						} else if mes == "TOOLS" {
-							go sendGenericMessage(message.Sender.ID)
+							go sendGenericMessage(message.Recipient.ID)
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") {
 							msg = "What kind of programming languages do you want to learn"
 						} else if mes == "GO" || mes == "GOLANG" {
@@ -179,7 +179,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 						} else if mes == "LISP" {
 							msg = "LISP is really good!"
 						} else if strings.Contains(mes, "BLACKJACK") {
-							go PlayBlackjack(message.Recipient.ID)
+							go PlayBlackjack(message.Sender.ID)
 							break
 						} else if strings.Contains(mes,"Calculator") {
 							//go Calculate(message.Sender.ID)
