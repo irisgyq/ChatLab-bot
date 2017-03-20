@@ -11,18 +11,15 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"math/rand"
-	"time"
-	"bufio"
-	"strconv"
 )
 
 const FacebookEndPoint = "https://graph.facebook.com/v2.6/me/messages"
+const WeatherPoint = "api.openweathermap.org/data/2.5/weather"
+
 var (
 	accessToken = os.Getenv("FB_PAGE_ACCESS_TOKEN")
 	validationToken = os.Getenv("VALIDATION_TOKEN")
 	port = os.Getenv("PORT")
-	random = rand.New(rand.NewSource(time.Now().Unix()))
 )
 
 type Payload struct {
@@ -64,16 +61,16 @@ type Message struct {
 type AttachmentPayload struct {
 	Template_type string `json:"template_type"`
 	Text string `json:"text"`
-	Buttons *[]Button `json:"buttons"`
-	//Elements      *[]Elements `json:"elements"`
+	//Buttons *[]Button `json:"buttons"`
+	Elements      *[]Elements `json:"elements"`
 }
 
-/*type Elements struct {
+type Elements struct {
 	Title string `json:"title"`
 	Subtitle string `json:"subtitle, omitempty"`
 	Image_Url   string `json:"imageurl,omitempty"`
 	Buttons     *[]Button `json:"buttons"`
-}*/
+}
 
 type Button struct {
 	Type string `json:"type"`
@@ -91,6 +88,7 @@ type MessageToSend struct {
 	Recipient Recipient `json:"recipient"`
 	Message   Message   `json:"message"`
 }
+
 
 type Info struct {
 	FirstName string `json:"first_name"`
@@ -195,9 +193,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 						} else if mes == "LISP" {
 							msg = "LISP is really good!"
 							go sendTextMessage(message.Sender.ID, msg)
-						} else if strings.Contains(mes, "BLACKJACK") || mes == "ENTERTAINMENT" {
-							PlayBlackjack(message.Sender.ID)
-						} else {
+						}  else {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
 							go sendTextMessage(message.Sender.ID, msg)
 						}
@@ -236,23 +232,29 @@ func sendGenericMessage(sender string) {
 			Attachment: &Attachment{
 				Type: "template",
 				Payload: &AttachmentPayload{
-					Template_type: "button",
-					Text: "These are some tools.",
-					Buttons: &[]Button{{
+					Template_type: "generic",
+					Elements: &[]Elements{{
+						Title: "Tools",
+						Subtitle: "You can choose one of them!",
+						Image_Url: "./tools.png",
+						Buttons: &[]Button{{
 							Type: "postback",
 							Title: "Study",
-							Payload: "programming languages",
+							Payload: "PROGRAMMING LANGUAGES",
+						}, {
+							Type: "web_url",
+							Title: "Entertainment",
+							Url:"http://www.websudoku.com/",
 						},{
-							Type: "postback",
-							Title: "entertainment",
-							Payload:"blackjack",
+							Type: "web_url",
+							Title: "Weather",
+							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
 						}},
-
 					}},
-
 				},
-
-	})
+			},
+		},
+	},)
 }
 
 func sendMessage(m interface{}) {
@@ -311,188 +313,4 @@ func getSenderInfo(userID string) (*Info, error) {
 	return Info, json.Unmarshal(read, Info)
 }
 
-func PlayBlackjack(sender string) {
-
-		initcards := []int{1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9,
-			10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
-
-		playerCard := make([]int, 0)
-		dealerCard := make([]int, 0)
-
-		PisBust := false
-		DisBust := false
-
-		sendTextMessage(sender,"Game begins...")
-
-		cards := shuffle(initcards)
-
-		playerCard = append(playerCard, pop(&cards))
-		sendTextMessage(sender,"The player's first card is: "+strconv.Itoa(playerCard[0]))
-		dealerCard = append(dealerCard, pop(&cards))
-		sendTextMessage(sender, "The dealer's first card is: "+strconv.Itoa(dealerCard[0]))
-		playerCard = append(playerCard, pop(&cards))
-		sendTextMessage(sender, "The player's second card is: "+strconv.Itoa(playerCard[1]))
-
-		if blackjack(playerCard) {
-			sendTextMessage(sender, "The player has blackjack! Game is over, the player is the winner.")
-		} else {
-			dealerCard = append(dealerCard, pop(&cards))
-			if blackjack(dealerCard) {
-				sendTextMessage(sender, "The dealer's second card is: " + strconv.Itoa(dealerCard[1]))
-				sendTextMessage(sender, "The dealer has blackjack! Game is over, the dealer is the winner.")
-			} else {
-				playerSum := playerCard[0] + playerCard[1]
-				dealerSum := dealerCard[0] + dealerCard[1]
-
-				sendTextMessage(sender, "The sum of player's cards is:" + strconv.Itoa(playerSum))
-
-				isPValid := true
-				for (isPValid) {
-					sendTextMessage(sender, "Does the player want one more card? yes or hit")
-					inputReader := bufio.NewReader(os.Stdin)
-					input, err := inputReader.ReadString('\n')
-
-					if err != nil {
-						sendTextMessage(sender, "Your input is wrong.")
-						return
-					}
-
-					switch input {
-					case "yes\n":{
-						playerCard = append(playerCard, pop(&cards))
-						go sendTextMessage(sender, "This card is:" + strconv.Itoa(playerCard[len(playerCard) - 1]))
-						playerSum += playerCard[len(playerCard) - 1]
-						go sendTextMessage(sender, "The sum of player's card is:" + strconv.Itoa(playerSum))
-
-						if blackjack(playerCard) {
-							go sendTextMessage(sender, "The player has 21 points!")
-							isPValid = false
-							break
-						} else if playerSum > 21 {
-							go sendTextMessage(sender, "Player's cards are busting.")
-							PisBust = true
-							isPValid = false
-							break
-						}
-						break
-					}
-					case "hit\n" :{
-						isPValid = false
-						break
-					}
-
-					}
-				}
-
-				sendTextMessage(sender, "The dealer's second card is: " + strconv.Itoa(dealerCard[1]))
-				sendTextMessage(sender, "The sum of dealer's cards is:" + strconv.Itoa(dealerSum))
-
-				isDValid := true
-				for (isDValid) {
-					for dealerSum < 17 {
-						sendTextMessage(sender, "Because the sum of dealer's cards is less than 17, he must add one more card.")
-						dealerCard = append(dealerCard, pop(&cards))
-						sendTextMessage(sender, "The new card is:" + strconv.Itoa(dealerCard[len(dealerCard) - 1]))
-						dealerSum += dealerCard[len(dealerCard) - 1]
-						sendTextMessage(sender, "The sum of dealer's cards is:" + strconv.Itoa(dealerSum))
-
-						if dealerSum == 21 {
-							sendTextMessage(sender, "The dealer has 21 points!")
-							break
-						}
-						if dealerSum > 21 {
-							sendTextMessage(sender, "dealer's cards are busting.")
-							DisBust = true
-							break
-						}
-					}
-
-					if dealerSum < 21 {
-						sendTextMessage(sender, "Dose the dealer want one more card?")
-						inputReader := bufio.NewReader(os.Stdin)
-						input, err := inputReader.ReadString('\n')
-
-						if err != nil {
-							sendTextMessage(sender, "Your input is wrong.")
-							return
-						}
-
-						switch input {
-						case "yes\n":{
-							dealerCard = append(dealerCard, pop(&cards))
-							go sendTextMessage(sender, "This card is:")
-							go sendTextMessage(sender, strconv.Itoa(dealerCard[len(dealerCard) - 1]))
-							dealerSum += dealerCard[len(dealerCard) - 1]
-							go sendTextMessage(sender, "The sum of dealer's card is:" + strconv.Itoa(dealerSum))
-
-							if blackjack(dealerCard) {
-								go sendTextMessage(sender, "The dealer has 21 points!")
-								isDValid = false
-								break
-							} else if dealerSum > 21 {
-								go sendTextMessage(sender, "dealer's cards are busting.")
-								DisBust = true
-								isDValid = false
-								break
-							}
-						}
-						case "hit\n" :{
-							isDValid = false
-							break
-						}
-
-						}
-					} else {
-						isDValid = false
-					}
-				}
-
-				if (DisBust && PisBust) || (!DisBust && !PisBust && (dealerSum == playerSum)) {
-					sendTextMessage(sender, "Game is over, it's a push")
-				} else if (DisBust && !PisBust) || (!DisBust && !PisBust && (dealerSum < playerSum)) {
-					sendTextMessage(sender, "Game is over, the player wins")
-				} else if (!DisBust && PisBust) || (!DisBust && !PisBust && (dealerSum > playerSum)) {
-					sendTextMessage(sender, "Game is over, the dealer wins")
-				}
-			}
-		}
-}
-
-func shuffle (cards []int) []int {
-	temp := [52]int{}
-	l := len(cards)
-	for i := l-1; i>0; i-- {
-		r := random.Intn(i+1)
-		cards[r], cards[i] = cards[i], cards[r]
-	}
-	temp[cards[0]] += 1
-	return cards
-}
-
-//deal cards randomly
-func pop (cards *[]int) int  {
-	pos := rand.Intn(len(*cards)-1)
-	card := (*cards)[pos]
-	*cards = append((*cards)[1:pos],(*cards)[pos:]...)
-	return card
-}
-
-//judge if it is blackjack
-func blackjack (a []int) bool {
-	sum := 0
-	hasOne := false
-	for i :=0; i<len(a);i++ {
-		sum += a[i]
-		if(a[i]==1) {
-			hasOne = true
-		}
-	}
-
-	if sum == 21{
-		return true;
-	} else if hasOne && sum+10==21 {
-		return true;
-	}
-	return false;
-}
 
