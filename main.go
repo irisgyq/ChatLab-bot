@@ -280,7 +280,7 @@ func sendGenericMessage(sender string) {
 							Title: "Entertainment",
 						},{
 							Type: "web_url",
-							Url: "http://api.openweathermap.org/data/2.5/weather?q=beijing&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
+							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
 							Title: "Weather",
 						}},
 					}},
