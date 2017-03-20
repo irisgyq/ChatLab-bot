@@ -60,7 +60,7 @@ type Message struct {
 
 type AttachmentPayload struct {
 	Template_type string `json:"template_type"`
-	Text string `json:"text"`
+	//Text string `json:"text"`
 	//Buttons *[]Button `json:"buttons"`
 	Elements      *[]Elements `json:"elements"`
 }
