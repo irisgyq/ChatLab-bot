@@ -20,8 +20,8 @@
       <file leaf-file-name="main.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="237" column="65" lean-forward="true" selection-start-line="237" selection-start-column="65" selection-end-line="237" selection-end-column="65" />
+            <state relative-caret-position="163">
+              <caret line="66" column="17" lean-forward="false" selection-start-line="66" selection-start-column="17" selection-end-line="66" selection-end-column="17" />
               <folding>
                 <element signature="e#14#163#0" expanded="true" />
               </folding>
@@ -94,8 +94,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1433" />
-    <option name="y" value="23" />
+    <option name="x" value="1362" />
+    <option name="y" value="259" />
     <option name="width" value="1234" />
     <option name="height" value="737" />
   </component>
@@ -524,7 +524,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1433" y="23" width="1234" height="737" extended-state="0" />
+    <frame x="1362" y="259" width="1234" height="737" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -625,8 +625,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="237" column="65" lean-forward="true" selection-start-line="237" selection-start-column="65" selection-end-line="237" selection-end-column="65" />
+        <state relative-caret-position="163">
+          <caret line="66" column="17" lean-forward="false" selection-start-line="66" selection-start-column="17" selection-end-line="66" selection-end-column="17" />
           <folding>
             <element signature="e#14#163#0" expanded="true" />
           </folding>

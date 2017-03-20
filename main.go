@@ -63,15 +63,17 @@ type Postback struct {
 
 type AttachmentPayload struct {
 	Template_type string `json:"type"`
-	Elements      *[]Elements `json:"elements"`
+	Text string `json:"text"`
+	Buttons *[]Button `json:"buttons"`
+	//Elements      *[]Elements `json:"elements"`
 }
 
-type Elements struct {
+/*type Elements struct {
 	Title string `json:"title"`
 	Subtitle string `json:"subtitle, omitempty"`
 	Image_Url   string `json:"imageurl,omitempty"`
 	Buttons     *[]Button `json:"buttons"`
-}
+}*/
 
 type Button struct {
 	Type string `json:"type"`
@@ -235,12 +237,9 @@ func sendGenericMessage(sender string) {
 			Attachment: &Attachment{
 				Type: "template",
 				Payload: &AttachmentPayload{
-					Template_type: "generic",
-					Elements: &[]Elements{{
-						Title: "Tools",
-						Subtitle: "You can study programming languages, play blackjack or use calculator",
-						//Image_Url: "./tool.png",
-						Buttons: &[]Button{{
+					Template_type: "button",
+					Text: "These are some tools.",
+					Buttons: &[]Button{{
 							Type: "postback",
 							Title: "Study",
 							Payload: "What kind of programming languages do you want to learn",
@@ -257,9 +256,7 @@ func sendGenericMessage(sender string) {
 					}},
 
 				},
-			},
 
-		},
 	})
 }
 
