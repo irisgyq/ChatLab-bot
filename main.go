@@ -62,7 +62,7 @@ type Postback struct {
 }
 
 type AttachmentPayload struct {
-	Template_type string `json:"type"`
+	Template_type string `json:"template_type"`
 	Text string `json:"text"`
 	Buttons *[]Button `json:"buttons"`
 	//Elements      *[]Elements `json:"elements"`
@@ -166,7 +166,6 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							msg = "Bye " + info.FirstName + " " + info.LastName + "Have a nice day! See you next time."
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
-							msg = "OH"
 							go sendGenericMessage(message.Sender.ID)
 						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") {
 							msg = "What kind of programming languages do you want to learn"
