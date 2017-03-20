@@ -171,28 +171,28 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "GO" || mes == "GOLANG" {
-							msg = "GO is really good!"
+							msg = "Go is a free and open source programming language created at Google in 2007 by Robert Griesemer, Rob Pike, and Ken Thompson.It is a compiled, statically typed language in the tradition of Algol and C, with garbage collection, limited structural typing，memory safety features and CSP-style concurrent programming features added."
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "PYTHON" {
-							msg = "Python is really good!"
+							msg = "Python is a widely used high-level programming language for general-purpose programming, created by Guido van Rossum and first released in 1991. An interpreted language. Python has a design philosophy which emphasizes code readabilityPython features a dynamic type system and automatic memory management and supports multiple programming paradigms, including object-oriented, imperative, functional programming, and procedural styles. It has a large and comprehensive standard library."
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "RUBY" || mes == "RUBY ON RAILS" {
-							msg = "Ruby is really good!"
+							msg = "Ruby is a dynamic, reflective, object-oriented, general-purpose programming language. It was designed and developed in the mid-1990s by Yukihiro Matsumoto in Japan. It supports multiple programming paradigms, including functional, object-oriented, and imperative. It also has a dynamic type system and automatic memory management"
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "Java" {
-							msg = "Java is really good!"
+							msg = "Java is a general-purpose computer programming language that is concurrent, class-based, object-oriented,and specifically designed to have as few implementation dependencies as possible. Java is a general-purpose computer programming language that is concurrent, class-based, object-oriented,[14] and specifically designed to have as few implementation dependencies as possible.  "
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "JavaScript" || mes == "JS" {
-							msg = "JavaScript is really good!"
+							msg = "JavaScript is a high-level, dynamic, untyped, and interpreted programming language.It has been standardized in the ECMAScript language specification.Alongside HTML and CSS, JavaScript is one of the three core technologies of World Wide Web content production; the majority of websites employ it, and all modern Web browsers support it without the need for plug-ins."
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "SCALA"{
-							msg = "SCALA is really good!"
+							msg = "Scala is a general-purpose programming language providing support for functional programming and a strong static type system. Designed to be concise,many of Scala's design decisions were designed to build from criticisms of Java.!"
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "PROLOG"  {
-							msg = "Prolog is really good!"
+							msg = "Prolog is a general-purpose logic programming language associated with artificial intelligence and computational linguistics.Prolog has its roots in first-order logic, a formal logic, and unlike many other programming languages, Prolog is declarative: the program logic is expressed in terms of relations, represented as facts and rules. A computation is initiated by running a query over these relations."
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "LISP" {
-							msg = "LISP is really good!"
+							msg = "Lisp is a family of computer programming languages with a long history and a distinctive, fully parenthesized prefix notation.[3] Originally specified in 1958, Lisp is the second-oldest high-level programming language in widespread use today. Only Fortran is older, by one year.Lisp has changed since its early days, and many dialects have existed over its history. Today, the best known general-purpose Lisp dialects are Common Lisp and Scheme.!"
 							go sendTextMessage(message.Sender.ID, msg)
 						}  else if mes == "WEATHER" {
 							msg = "Please input a city and plus a &, like WashingtonDC&."
