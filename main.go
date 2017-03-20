@@ -44,6 +44,10 @@ type Messaging struct {
 	Message   Message   `json:"message,omitempty"`
 }
 
+type Postback struct {
+	Payload string `json:"payload"`
+}
+
 type Sender struct {
 	ID string `json:"id"`
 }
@@ -55,10 +59,6 @@ type Recipient struct {
 type Message struct {
 	Text       string      `json:"text,omitempty"`
 	Attachment *Attachment `json:"attachment,omitempty"`
-}
-
-type Postback struct {
-	Payload string `json:"payload"`
 }
 
 type AttachmentPayload struct {
@@ -78,7 +78,7 @@ type AttachmentPayload struct {
 type Button struct {
 	Type string `json:"type"`
 	Title string `json:"title"`
-	Payload *Postback `json:"payload"`
+	Payload string `json:"payload"`
 }
 
 type Attachment struct {
@@ -240,15 +240,11 @@ func sendGenericMessage(sender string) {
 					Buttons: &[]Button{{
 							Type: "postback",
 							Title: "Study",
-							Payload: &Postback{"" +
-								"PROGRAMMING_LANGUAGES",
-							},
+							Payload:"PROGRAMMING_LANGUAGES",
 						},{
 							Type: "postback",
 							Title: "entertainment",
-							Payload: &Postback{
-								"BLACKJACK",
-							  },
+							Payload:"BLACKJACK",
 						}},
 
 					}},
