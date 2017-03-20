@@ -274,10 +274,10 @@ func sendGenericMessage(sender string) {
 							Type: "postback",
 							Title: "Study",
 							Payload: "PROGRAMMING LANGUAGES",
-						}, {
-							Type: "web_url",
-							Url:"http://www.websudoku.com/",
-							Title: "Entertainment",
+						//}, //{
+							//Type: "web_url",
+							//Url:"http://www.websudoku.com/",
+							//Title: "Entertainment",
 						}},/*,{
 							Type: "web_url",
 							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
