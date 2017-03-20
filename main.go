@@ -57,6 +57,7 @@ type Recipient struct {
 type Message struct {
 	Text       string      `json:"text,omitempty"`
 	Attachment *Attachment `json:"attachment,omitempty"`
+	Url string `json:"url"`
 }
 
 type AttachmentPayload struct {
@@ -195,7 +196,12 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 						} else if mes == "LISP" {
 							msg = "LISP is really good!"
 							go sendTextMessage(message.Sender.ID, msg)
-						}  else {
+						}  else if strings.Contains(mes, "WEATHER") {
+							msg = "Please input a city and plus a &, like WashingtonDC&."
+							go sendTextMessage(message.Sender.ID, msg)
+						} else if strings.HasSuffix(mes, "&") {
+							go sendUrlMessage(message.Sender.ID, "http://api.openweathermap.org/data/2.5/weather?q="+mes+"mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518")
+						} else {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
 							go sendTextMessage(message.Sender.ID, msg)
 						}
@@ -225,13 +231,24 @@ func sendTextMessage(sender string, text string) {
 	})
 }
 
+func sendUrlMessage(sender string, url string) {
+	sendMessage(MessageToSend{
+		Recipient: Recipient{
+			ID: sender,
+		},
+		Message: Message{
+			Url: url,
+		},
+	})
+}
+
 func sendGenericMessage(sender string, city string) {
-	resp, err := http.Get("https://graph.facebook.com/v2.8/location/fields=city")
+	/*resp, err := http.Get("https://graph.facebook.com/v2.8/city/fields=city")
 	if err!=nil {
 		//
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)*/
 
 	sendMessage(MessageToSend{
 		Recipient: Recipient{
@@ -257,7 +274,7 @@ func sendGenericMessage(sender string, city string) {
 						},{
 							Type: "web_url",
 							Title: "Weather",
-							Url: "http://api.openweathermap.org/data/2.5/weather?q="+string(body)+"&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
+							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
 						}},
 					}},
 				},
