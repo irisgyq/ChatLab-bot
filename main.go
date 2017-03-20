@@ -240,7 +240,7 @@ func sendUrlMessage(sender string, url string) {
 			Attachment: &Attachment{
 				Type: "template",
 				Payload: &AttachmentPayload{
-					Template_type: "gneric",
+					Template_type: "generic",
 					Elements: &[]Elements{{
 						Title:"Weather",
 						Buttons: &[]Button{{
@@ -282,7 +282,7 @@ func sendGenericMessage(sender string) {
 							Messenger_extensions: true,
 						},{
 							Type: "web_url",
-							Url: "http://api.openweathermap.org/data/2.5/weather?q=WashingtonDC&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
+							Url: "http://api.openweathermap.org/data/2.5/weather?q=beijing&mode=html&APPID=404cd230fcf7a79e7dcb4f9abbaca518",
 							Title: "Weather",
 							Messenger_extensions: true,
 						}},
