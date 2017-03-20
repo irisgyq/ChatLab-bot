@@ -168,7 +168,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "TOOLS" {
 							go sendGenericMessage(message.Sender.ID)
-						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") {
+						} else if strings.Contains(mes, "PROGRAMMING LANGUAGES") || mes == "STUDY" {
 							msg = "What kind of programming languages do you want to learn"
 							go sendTextMessage(message.Sender.ID, msg)
 						} else if mes == "GO" || mes == "GOLANG" {
@@ -195,7 +195,7 @@ func handlePost(rw http.ResponseWriter, req *http.Request) {
 						} else if mes == "LISP" {
 							msg = "LISP is really good!"
 							go sendTextMessage(message.Sender.ID, msg)
-						} else if strings.Contains(mes, "BLACKJACK") {
+						} else if strings.Contains(mes, "BLACKJACK") || mes == "ENTERTAINMENT" {
 							PlayBlackjack(message.Sender.ID)
 						} else {
 							msg = "Hello " + info.FirstName + " " + info.LastName + ", this is a lovely chat bot. I like repeat your words, so " + message.Message.Text
@@ -239,13 +239,13 @@ func sendGenericMessage(sender string) {
 					Template_type: "button",
 					Text: "These are some tools.",
 					Buttons: &[]Button{{
-							Type: "web_url",
+							Type: "postback",
 							Title: "Study",
-							Url: "https://google.com",
+							Url: "programming languages",
 						},{
 							Type: "postback",
 							Title: "entertainment",
-							Payload:"BLACKJACK",
+							Payload:"blackjack",
 						}},
 
 					}},
